@@ -21,33 +21,33 @@
     <div
       class="flex flex-col max-w-xl min-h-screen mx-auto bg-gray-900 border-l-2 border-r-2 border-gray-700"
     >
-      <div id="beat-container" class="grid grid-cols-4 flex-1 overflow-hidden">
-        <div id="D" class="relative h-full"></div>
-        <div id="F" class="relative h-full"></div>
-        <div id="J" class="relative h-full"></div>
-        <div id="K" class="relative h-full"></div>
+      <div id="wrapper" class="grid grid-cols-4 flex-1 overflow-hidden">
+        <div id="line-1" class="relative h-full"></div>
+        <div id="line-2" class="relative h-full"></div>
+        <div id="line-3" class="relative h-full"></div>
+        <div id="line-4" class="relative h-full"></div>
       </div>
       <div class="grid grid-cols-4 h-40">
         <div
-          id="d-key"
+          id="key-1"
           class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-r border-gray-900 mt-auto"
         >
           D
         </div>
         <div
-          id="f-key"
+          id="key-2"
           class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-r border-gray-900 mt-auto"
         >
           F
         </div>
         <div
-          id="j-key"
+          id="key-3"
           class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-r border-gray-900 mt-auto"
         >
           J
         </div>
         <div
-          id="k-key"
+          id="key-4"
           class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-gray-900 mt-auto"
         >
           K
@@ -65,173 +65,10 @@
       </div>
     </div>
 
-    <script>
-      let animationCss = "";
-      let dLine = "";
-      let fLine = "";
-      let jLine = "";
-      let kLine = "";
-      let speed = 0.5;
-      let skipTime = 0;
-      let isStarted = false;
-      let isPaused = false;
-      let isSkipped = false;
+    <script type="module">
+      import { Game } from "./game.js";
 
-      const timeToSeconds = (time) => {
-        const [minutes, seconds, miliseconds] = time.split(":").map(Number);
-        return minutes * 60 + seconds + miliseconds / 1000;
-      };
-
-      const createBeat = (id) => {
-        return `<div id="beat-${id}" class="absolute w-full h-full transition duration-500">
-          <div class="-mt-8 h-8 w-full bg-blue-200 absolute"></div>
-        </div>`;
-      };
-
-      const renderCss = () => {
-        const styleElement = document.createElement("style");
-        styleElement.type = "text/css";
-        styleElement.innerHTML = animationCss;
-        document.head.appendChild(styleElement);
-      };
-
-      fetch("./music.json")
-        .then((res) => res.json())
-        .then((data) => {
-          skipTime = timeToSeconds(data.skipTime);
-
-          data.beats.forEach((beat, index) => {
-            animationCss += `#beat-${index} {
-              animation: beat linear ${speed}s;
-              animation-delay: ${timeToSeconds(beat.time) - speed}s;
-            }
-            
-            .skip #beat-${index} {
-              animation: beat linear ${speed}s;
-              animation-delay: ${
-                timeToSeconds(beat.time) - speed - skipTime + 1.5
-              }s;
-            }
-            
-            .pause #beat-${index} {
-              animation-play-state: paused;
-            }`;
-
-            switch (beat.key) {
-              case "D":
-                dLine += createBeat(index);
-                break;
-              case "F":
-                fLine += createBeat(index);
-                break;
-              case "J":
-                jLine += createBeat(index);
-                break;
-              case "K":
-                kLine += createBeat(index);
-                break;
-              default:
-                break;
-            }
-          });
-        })
-        .then(() => {
-          document.getElementById("D").innerHTML = dLine;
-          document.getElementById("F").innerHTML = fLine;
-          document.getElementById("J").innerHTML = jLine;
-          document.getElementById("K").innerHTML = kLine;
-        });
-
-      const handleKey = (key, type) => {
-        const keyClassList = document.getElementById(`${key}-key`).classList;
-        switch (type) {
-          case "down":
-            keyClassList.remove("bg-gray-700");
-            keyClassList.add("bg-gray-600");
-            break;
-          default:
-            keyClassList.remove("bg-gray-600");
-            keyClassList.add("bg-gray-700");
-            break;
-        }
-      };
-
-      const keys = ["d", "f", "j", "k"];
-
-      const overlayClassList = document.getElementById("overlay").classList;
-      const overlayElementTitle = document.getElementById("overlay-title");
-
-      const beatContainerClassList =
-        document.getElementById("beat-container").classList;
-
-      const music = new Audio("./music.mp3");
-
-      const startGame = () => {
-        isStarted = true;
-
-        overlayClassList.add("hidden");
-
-        music.play().then(() => {
-          renderCss();
-        });
-      };
-
-      const pauseGame = () => {
-        isPaused = true;
-        overlayClassList.remove("hidden");
-        overlayElementTitle.textContent = "Game paused. Press enter to resume";
-        beatContainerClassList.add("pause");
-        music.pause();
-      };
-      
-      const resumeGame = () => {
-        isPaused = false;
-        
-        overlayClassList.add("hidden");
-        beatContainerClassList.remove("pause");
-
-        music.play();
-      };
-
-      const skipToPlay = () => {
-        music.currentTime = skipTime;
-        beatContainerClassList.add("skip");
-      };
-
-      document.addEventListener("keydown", (e) => {
-        if (!isStarted && e.key === "Enter") {
-          startGame();
-        }
-
-        if (isStarted && isPaused && e.key === "Enter") {
-          resumeGame();
-        }
-
-        if (isStarted && !isPaused) {
-          if (keys.includes(e.key)) {
-            handleKey(e.key, "down");
-          }
-
-          if (e.key === "Escape") {
-            pauseGame();
-          }
-
-          const hasPassedSkipTime = music.currentTime >= skipTime;
-          console.log(hasPassedSkipTime, music.currentTime, skipTime);
-
-          if (!hasPassedSkipTime && e.key === " ") {
-            skipToPlay();
-          }
-        }
-      });
-
-      document.addEventListener("keyup", (e) => {
-        if (isStarted && !isPaused) {
-          if (keys.includes(e.key)) {
-            handleKey(e.key, "up");
-          }
-        }
-      });
+      const game = new Game('./beatmaps/seiryu-blue-dragon');
     </script>
   </body>
 </html>
