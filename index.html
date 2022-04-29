@@ -60,7 +60,7 @@
         class="fixed inset-0 w-full h-full bg-black/70 flex items-center justify-center"
       >
         <h2 id="overlay-title" class="text-white text-5xl font-bold">
-          Press Enter to start game
+          Loading...
         </h2>
       </div>
     </div>
@@ -68,7 +68,18 @@
     <script type="module">
       import { Game } from "./game.js";
 
-      const game = new Game('./beatmaps/seiryu-blue-dragon');
+      const game = new Game();
+
+      game.load("./beatmaps/seiryu-blue-dragon").then(({ isLoaded, error }) => {
+        if (error) {
+          console.error(error);
+          game.setOverlayTitle("An error occured");
+          return;
+        }
+        if (isLoaded) {
+          game.setOverlayTitle("Press Enter to Start");
+        }
+      });
     </script>
   </body>
 </html>

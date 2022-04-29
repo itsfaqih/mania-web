@@ -39,21 +39,18 @@ export class Game {
   isStarted = false;
   isPaused = false;
 
-  constructor(beatmap) {
-    this.loadBeatmap.bind(this);
+  constructor() {
+    this.initEventListener.bind(this);
+    this.load.bind(this);
     this.start.bind(this);
     this.pause.bind(this);
     this.resume.bind(this);
     this.skipToMain.bind(this);
     this.handleKey.bind(this);
+    this.setOverlayTitle.bind(this);
+  }
 
-    if (!beatmap) {
-      throw new Error("No beatmap provided");
-    }
-    
-    this.loadBeatmap(`${beatmap}/beatmap.json`);
-    this.music = new Audio(`${beatmap}/music.mp3`);
-
+  initEventListener() {
     document.addEventListener("keydown", (e) => {
       if (!this.isStarted && e.key === "Enter") {
         this.start();
@@ -89,17 +86,19 @@ export class Game {
     });
   }
 
-  loadBeatmap(path) {
+  async load(beatmap) {
     const createBeat = (id) => {
       return `<div id="beat-${id}" class="absolute w-full h-full transition duration-500">
         <div class="-mt-8 h-8 w-full bg-blue-200 absolute"></div>
       </div>`;
     };
 
-    fetch(path)
+    return await fetch(`${beatmap}/beatmap.json`)
       .then((res) => res.json())
       .then((data) => {
         this.skipTime = timeToSeconds(data.skipTime);
+
+        this.music = new Audio(`${beatmap}/music.mp3`);
 
         data.beats.forEach((beat, index) => {
           this.animationCss += `#beat-${index} {
@@ -120,12 +119,22 @@ export class Game {
 
           this.beats[beat.key].push(createBeat(index));
         });
-      })
-      .then(() => {
+
         this.elements.lines[1].innerHTML = this.beats[1].join("");
         this.elements.lines[2].innerHTML = this.beats[2].join("");
         this.elements.lines[3].innerHTML = this.beats[3].join("");
         this.elements.lines[4].innerHTML = this.beats[4].join("");
+      })
+      .then(() => {
+        this.initEventListener();
+        
+        return { isLoaded: true, error: null };
+      })
+      .catch((error) => {
+        return {
+          error,
+          isLoaded: false,
+        };
       });
   }
 
@@ -149,8 +158,7 @@ export class Game {
     this.isStarted = true;
 
     this.elements.overlay.container.classList.add("hidden");
-    this.elements.overlay.title.textContent =
-      "Game paused. Press enter to resume";
+    this.setOverlayTitle("Game paused. Press enter to resume");
 
     this.music.play().then(() => {
       renderCss(this.animationCss);
@@ -178,5 +186,9 @@ export class Game {
   skipToMain() {
     this.music.currentTime = this.skipTime;
     this.elements.wrapper.classList.add("skip");
+  }
+
+  setOverlayTitle(text) {
+    this.elements.overlay.title.textContent = text;
   }
 }
