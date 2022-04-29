@@ -103,15 +103,8 @@ export class Game {
               animation-delay: ${timeToSeconds(beat.time) - this.speed}s;
             }
             
-            .skip #beat-${index} {
-              animation: beat linear ${this.speed}s;
-              animation-delay: ${
-                timeToSeconds(beat.time) - this.speed - this.skipTime + 1
-              }s;
-            }
-            
             .pause #beat-${index} {
-              animation-play-state: paused;
+              animation-play-state: paused !important;
             }`;
 
           this.beats[beat.key].push({
@@ -153,7 +146,9 @@ export class Game {
         const pressedTime = this.music.currentTime;
 
         const pressedBeat = this.beats[pressedKey].findIndex((beat) => {
-          return Math.abs(beat.time - pressedTime) <= this.tolerance && !beat.pressed;
+          return (
+            Math.abs(beat.time - pressedTime) <= this.tolerance && !beat.pressed
+          );
         });
 
         if (pressedBeat !== -1) {
@@ -253,6 +248,22 @@ export class Game {
   }
 
   skipToMain() {
+    const skipTime = this.skipTime - this.music.currentTime;
+
+    let animationCss = "";
+
+    Object.values(this.beats).forEach((beats) => {
+      beats.forEach((beat) => {
+        animationCss += `
+              .skip #beat-${beat.id} {
+                animation: beat linear ${this.speed}s;
+                animation-delay: ${beat.time - this.speed - skipTime}s;
+              }`;
+      });
+    });
+
+    renderCss(animationCss);
+
     this.music.currentTime = this.skipTime;
 
     this.elements.wrapper.classList.add("skip");
