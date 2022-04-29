@@ -71,6 +71,7 @@
       let fLine = "";
       let jLine = "";
       let kLine = "";
+      let speed = 0.5;
 
       const timeToSeconds = (time) => {
         const [minutes, seconds, miliseconds] = time.split(":").map(Number);
@@ -95,8 +96,8 @@
         .then((data) => {
           data.beats.forEach((beat, index) => {
             animationCss += `#beat-${index} {
-              animation: beat 0.5s;
-              animation-delay: ${timeToSeconds(beat.time)}s;
+              animation: beat linear ${speed}s;
+              animation-delay: ${timeToSeconds(beat.time) - speed}s;
             }`;
 
             switch (beat.key) {
