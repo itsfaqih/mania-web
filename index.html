@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900">
+    <div
+      class="flex flex-col max-w-xl min-h-screen mx-auto bg-gray-900 border-l-2 border-r-2 border-gray-700"
+    >
+      <div class="grid grid-cols-4 flex-1 overflow-hidden">
+        <div id="d-line" class="relative h-full"></div>
+        <div id="f-line" class="relative h-full"></div>
+        <div id="j-line" class="relative h-full"></div>
+        <div id="k-line" class="relative h-full"></div>
+        <script>
+          document.getElementById("d-line").innerHTML = Array.from(
+            { length: 300 },
+            (_, index) =>
+              `<div id="d-beat-${index}" class="beat absolute w-full h-full transition duration-500">
+            <div class="h-8 w-full bg-blue-200 absolute"></div>
+          </div>`
+          ).join("");
+          document.getElementById("f-line").innerHTML = Array.from(
+            { length: 300 },
+            (_, index) =>
+              `<div id="d-beat-${index}" class="beat absolute w-full h-full transition duration-500">
+            <div class="h-8 w-full bg-blue-200 absolute"></div>
+          </div>`
+          ).join("");
+          document.getElementById("j-line").innerHTML = Array.from(
+            { length: 300 },
+            (_, index) =>
+              `<div id="d-beat-${index}" class="beat absolute w-full h-full transition duration-500">
+            <div class="h-8 w-full bg-blue-200 absolute"></div>
+          </div>`
+          ).join("");
+          document.getElementById("k-line").innerHTML = Array.from(
+            { length: 300 },
+            (_, index) =>
+              `<div id="d-beat-${index}" class="beat absolute w-full h-full transition duration-500">
+            <div class="h-8 w-full bg-blue-200 absolute"></div>
+          </div>`
+          ).join("");
+
+          setTimeout(() => {
+            [...document.getElementsByClassName("beat")].forEach(
+              (beat) => {
+                setTimeout(() => {
+                  beat.classList.add("translate-y-full");
+                }, beat.id.split("-")[2] * 100);
+              }
+            );
+          }, 1000);
+        </script>
+      </div>
+      <div class="grid grid-cols-4 h-40">
+        <div
+          class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-r border-gray-900 mt-auto"
+        >
+          D
+        </div>
+        <div
+          class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-r border-gray-900 mt-auto"
+        >
+          F
+        </div>
+        <div
+          class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-r border-gray-900 mt-auto"
+        >
+          J
+        </div>
+        <div
+          class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-gray-900 mt-auto"
+        >
+          K
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
