@@ -50,7 +50,7 @@
         </div>
       </div>
     </div>
-    
+
     <script>
       let animationCss = "";
       let dLine = "";
@@ -112,8 +112,9 @@
 
       document.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-          renderCss();
-          new Audio('./music.mp3').play();
+          new Audio("./music.mp3").play().then(() => {
+            renderCss();
+          });
         }
       });
     </script>
