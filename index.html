@@ -73,6 +73,9 @@
       let kLine = "";
       let speed = 0.5;
       let skipTime = 0;
+      let isStarted = false;
+      let isPaused = false;
+      let isSkipped = false;
 
       const timeToSeconds = (time) => {
         const [minutes, seconds, miliseconds] = time.split(":").map(Number);
@@ -105,7 +108,13 @@
             
             .skip #beat-${index} {
               animation: beat linear ${speed}s;
-              animation-delay: ${timeToSeconds(beat.time) - speed - skipTime + 1.5}s;
+              animation-delay: ${
+                timeToSeconds(beat.time) - speed - skipTime + 1.5
+              }s;
+            }
+            
+            .pause #beat-${index} {
+              animation-play-state: paused;
             }`;
 
             switch (beat.key) {
@@ -133,8 +142,6 @@
           document.getElementById("K").innerHTML = kLine;
         });
 
-      let isPlaying = false;
-
       const handleKey = (key, type) => {
         const keyClassList = document.getElementById(`${key}-key`).classList;
         switch (type) {
@@ -151,18 +158,18 @@
 
       const keys = ["d", "f", "j", "k"];
 
-      const overlayElementClassList =
-        document.getElementById("overlay").classList;
+      const overlayClassList = document.getElementById("overlay").classList;
       const overlayElementTitle = document.getElementById("overlay-title");
 
-      const beatContainerElement = document.getElementById("beat-container");
+      const beatContainerClassList =
+        document.getElementById("beat-container").classList;
 
       const music = new Audio("./music.mp3");
 
       const startGame = () => {
-        isPlaying = true;
+        isStarted = true;
 
-        overlayElementClassList.add("hidden");
+        overlayClassList.add("hidden");
 
         music.play().then(() => {
           renderCss();
@@ -170,23 +177,37 @@
       };
 
       const pauseGame = () => {
-        isPlaying = false;
-        overlayElementClassList.remove("hidden");
+        isPaused = true;
+        overlayClassList.remove("hidden");
         overlayElementTitle.textContent = "Game paused. Press enter to resume";
+        beatContainerClassList.add("pause");
         music.pause();
+      };
+      
+      const resumeGame = () => {
+        isPaused = false;
+        
+        overlayClassList.add("hidden");
+        beatContainerClassList.remove("pause");
+
+        music.play();
       };
 
       const skipToPlay = () => {
         music.currentTime = skipTime;
-        beatContainerElement.classList.add("skip");
+        beatContainerClassList.add("skip");
       };
 
       document.addEventListener("keydown", (e) => {
-        if (!isPlaying && e.key === "Enter") {
+        if (!isStarted && e.key === "Enter") {
           startGame();
         }
 
-        if (isPlaying) {
+        if (isStarted && isPaused && e.key === "Enter") {
+          resumeGame();
+        }
+
+        if (isStarted && !isPaused) {
           if (keys.includes(e.key)) {
             handleKey(e.key, "down");
           }
@@ -195,14 +216,17 @@
             pauseGame();
           }
 
-          if (e.key === " ") {
+          const hasPassedSkipTime = music.currentTime >= skipTime;
+          console.log(hasPassedSkipTime, music.currentTime, skipTime);
+
+          if (!hasPassedSkipTime && e.key === " ") {
             skipToPlay();
           }
         }
       });
 
       document.addEventListener("keyup", (e) => {
-        if (isPlaying) {
+        if (isStarted && !isPaused) {
           if (keys.includes(e.key)) {
             handleKey(e.key, "up");
           }
