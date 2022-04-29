@@ -17,7 +17,7 @@
       }
     </style>
   </head>
-  <body class="bg-gray-900">
+  <body class="bg-black">
     <div
       class="flex flex-col max-w-xl min-h-screen mx-auto bg-gray-900 border-l-2 border-r-2 border-gray-700"
     >
@@ -29,25 +29,39 @@
       </div>
       <div class="grid grid-cols-4 h-40">
         <div
+          id="d-key"
           class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-r border-gray-900 mt-auto"
         >
           D
         </div>
         <div
+          id="f-key"
           class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-r border-gray-900 mt-auto"
         >
           F
         </div>
         <div
+          id="j-key"
           class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-r border-gray-900 mt-auto"
         >
           J
         </div>
         <div
+          id="k-key"
           class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-gray-900 mt-auto"
         >
           K
         </div>
+      </div>
+    </div>
+
+    <div id="overlay">
+      <div
+        class="fixed inset-0 w-full h-full bg-black/70 flex items-center justify-center"
+      >
+        <h2 id="overlay-title" class="text-white text-5xl font-bold">
+          Press Enter to start game
+        </h2>
       </div>
     </div>
 
@@ -110,11 +124,68 @@
           document.getElementById("K").innerHTML = kLine;
         });
 
+      let isPlaying = false;
+
+      const handleKey = (key, type) => {
+        const keyClassList = document.getElementById(`${key}-key`).classList;
+        switch (type) {
+          case "down":
+            keyClassList.remove("bg-gray-700");
+            keyClassList.add("bg-gray-600");
+            break;
+          default:
+            keyClassList.remove("bg-gray-600");
+            keyClassList.add("bg-gray-700");
+            break;
+        }
+      };
+
+      const keys = ["d", "f", "j", "k"];
+
+      const overlayElementClassList =
+        document.getElementById("overlay").classList;
+      const overlayElementTitle = document.getElementById("overlay-title");
+
+      const music = new Audio("./music.mp3");
+
+      const startGame = () => {
+        isPlaying = true;
+
+        overlayElementClassList.add("hidden");
+
+        music.play().then(() => {
+          renderCss();
+        });
+      };
+
+      const pauseGame = () => {
+        isPlaying = false;
+        overlayElementClassList.remove("hidden");
+        overlayElementTitle.textContent = "Game paused. Press enter to resume";
+        music.pause();
+      };
+
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          new Audio("./music.mp3").play().then(() => {
-            renderCss();
-          });
+        if (!isPlaying && e.key === "Enter") {
+          startGame();
+        }
+
+        if (isPlaying) {
+          if (keys.includes(e.key)) {
+            handleKey(e.key, "down");
+          }
+
+          if (e.key === "Escape") {
+            pauseGame();
+          }
+        }
+      });
+
+      document.addEventListener("keyup", (e) => {
+        if (isPlaying) {
+          if (keys.includes(e.key)) {
+            handleKey(e.key, "up");
+          }
         }
       });
     </script>
