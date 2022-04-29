@@ -6,56 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @keyframes beat {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(100%);
+        }
+      }
+    </style>
   </head>
   <body class="bg-gray-900">
     <div
       class="flex flex-col max-w-xl min-h-screen mx-auto bg-gray-900 border-l-2 border-r-2 border-gray-700"
     >
       <div class="grid grid-cols-4 flex-1 overflow-hidden">
-        <div id="d-line" class="relative h-full"></div>
-        <div id="f-line" class="relative h-full"></div>
-        <div id="j-line" class="relative h-full"></div>
-        <div id="k-line" class="relative h-full"></div>
-        <script>
-          document.getElementById("d-line").innerHTML = Array.from(
-            { length: 300 },
-            (_, index) =>
-              `<div id="d-beat-${index}" class="beat absolute w-full h-full transition duration-500">
-            <div class="h-8 w-full bg-blue-200 absolute"></div>
-          </div>`
-          ).join("");
-          document.getElementById("f-line").innerHTML = Array.from(
-            { length: 300 },
-            (_, index) =>
-              `<div id="d-beat-${index}" class="beat absolute w-full h-full transition duration-500">
-            <div class="h-8 w-full bg-blue-200 absolute"></div>
-          </div>`
-          ).join("");
-          document.getElementById("j-line").innerHTML = Array.from(
-            { length: 300 },
-            (_, index) =>
-              `<div id="d-beat-${index}" class="beat absolute w-full h-full transition duration-500">
-            <div class="h-8 w-full bg-blue-200 absolute"></div>
-          </div>`
-          ).join("");
-          document.getElementById("k-line").innerHTML = Array.from(
-            { length: 300 },
-            (_, index) =>
-              `<div id="d-beat-${index}" class="beat absolute w-full h-full transition duration-500">
-            <div class="h-8 w-full bg-blue-200 absolute"></div>
-          </div>`
-          ).join("");
-
-          setTimeout(() => {
-            [...document.getElementsByClassName("beat")].forEach(
-              (beat) => {
-                setTimeout(() => {
-                  beat.classList.add("translate-y-full");
-                }, beat.id.split("-")[2] * 100);
-              }
-            );
-          }, 1000);
-        </script>
+        <div id="D" class="relative h-full"></div>
+        <div id="F" class="relative h-full"></div>
+        <div id="J" class="relative h-full"></div>
+        <div id="K" class="relative h-full"></div>
       </div>
       <div class="grid grid-cols-4 h-40">
         <div
@@ -80,5 +50,72 @@
         </div>
       </div>
     </div>
+    
+    <script>
+      let animationCss = "";
+      let dLine = "";
+      let fLine = "";
+      let jLine = "";
+      let kLine = "";
+
+      const timeToSeconds = (time) => {
+        const [minutes, seconds, miliseconds] = time.split(":").map(Number);
+        return minutes * 60 + seconds + miliseconds / 1000;
+      };
+
+      const createBeat = (id) => {
+        return `<div id="beat-${id}" class="absolute w-full h-full transition duration-500">
+          <div class="-mt-8 h-8 w-full bg-blue-200 absolute"></div>
+        </div>`;
+      };
+
+      const renderCss = () => {
+        const styleElement = document.createElement("style");
+        styleElement.type = "text/css";
+        styleElement.innerHTML = animationCss;
+        document.head.appendChild(styleElement);
+      };
+
+      fetch("./music.json")
+        .then((res) => res.json())
+        .then((data) => {
+          data.beats.forEach((beat, index) => {
+            animationCss += `#beat-${index} {
+              animation: beat 0.5s;
+              animation-delay: ${timeToSeconds(beat.time)}s;
+            }`;
+
+            switch (beat.key) {
+              case "D":
+                dLine += createBeat(index);
+                break;
+              case "F":
+                fLine += createBeat(index);
+                break;
+              case "J":
+                jLine += createBeat(index);
+                break;
+              case "K":
+                kLine += createBeat(index);
+                break;
+              default:
+                break;
+            }
+          });
+        })
+        .then(() => {
+          document.getElementById("D").innerHTML = dLine;
+          document.getElementById("F").innerHTML = fLine;
+          document.getElementById("J").innerHTML = jLine;
+          document.getElementById("K").innerHTML = kLine;
+        });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          renderCss();
+          new Audio('./music.mp3').play();
+        }
+      });
+    </script>
   </body>
 </html>
