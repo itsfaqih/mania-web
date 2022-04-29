@@ -186,20 +186,24 @@ export class Game {
       }
 
       Object.values(this.beats).forEach((beats) => {
-        const nearestUnpressedBeat = beats.findIndex((beat) => {
-          return (
-            Math.abs(beat.time - this.music.currentTime) <= this.tolerance &&
-            !beat.pressed
-          );
+        const nearestCurrentBeatIndex = beats.findIndex((beat) => {
+          return Math.abs(beat.time - this.music.currentTime) <= this.tolerance;
         });
 
-        if (nearestUnpressedBeat !== -1) {
+        if (nearestCurrentBeatIndex === -1) {
+          return;
+        }
+
+        const previousBeat = beats[nearestCurrentBeatIndex - 1];
+        const isFirstBeat = previousBeat === undefined;
+
+        if (!isFirstBeat && !previousBeat.pressed) {
           this.combo = 0;
 
           this.elements.combo.textContent = this.combo;
         }
       });
-    }, (this.tolerance + this.speed) * 1000);
+    }, 100);
   }
 
   pauseTimeCounter() {
@@ -257,7 +261,9 @@ export class Game {
         animationCss += `
               .skip #beat-${beat.id} {
                 animation: beat linear ${this.speed}s;
-                animation-delay: ${beat.time - this.speed - skipTime + this.tolerance}s;
+                animation-delay: ${
+                  beat.time - this.speed - skipTime + this.tolerance
+                }s;
               }`;
       });
     });
