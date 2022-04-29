@@ -257,7 +257,7 @@ export class Game {
         animationCss += `
               .skip #beat-${beat.id} {
                 animation: beat linear ${this.speed}s;
-                animation-delay: ${beat.time - this.speed - skipTime}s;
+                animation-delay: ${beat.time - this.speed - skipTime + this.tolerance}s;
               }`;
       });
     });
