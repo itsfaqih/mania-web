@@ -9,6 +9,7 @@ export class Game {
   tolerance = 0.1;
   timeCounter = null;
   failChecker = null;
+  pauseTimeout = 3;
   time = 0;
   elements = {
     overlay: {
@@ -50,6 +51,7 @@ export class Game {
   };
   isStarted = false;
   isPaused = false;
+  isResuming = false;
 
   initEventListener() {
     document.addEventListener("keydown", (e) => {
@@ -57,11 +59,11 @@ export class Game {
         this.start();
       }
 
-      if (this.isStarted && this.isPaused && e.key === "Enter") {
+      if (!this.isResuming && this.isStarted && this.isPaused && e.key === "Enter") {
         this.resume();
       }
 
-      if (this.isStarted && !this.isPaused) {
+      if (this.isStarted && !this.isPaused && !this.isResuming) {
         if (Object.values(this.keybinds).includes(e.key)) {
           this.handleKey(e.key, "down");
         }
@@ -240,7 +242,6 @@ export class Game {
     this.isStarted = true;
 
     this.elements.overlay.container.classList.add("hidden");
-    this.setOverlayTitle("Game paused. Press enter to resume");
 
     this.music.play().then(() => {
       renderCss(this.animationCss);
@@ -254,6 +255,7 @@ export class Game {
   pause() {
     this.isPaused = true;
 
+    this.setOverlayTitle("Game paused. Press enter to resume");
     this.elements.overlay.container.classList.remove("hidden");
     this.elements.wrapper.classList.add("pause");
 
@@ -265,14 +267,28 @@ export class Game {
   }
 
   resume() {
-    this.isPaused = false;
+    this.isResuming = true;
+    let countDown = this.pauseTimeout;
+    this.setOverlayTitle(`Resuming in ${countDown}`);
 
-    this.elements.overlay.container.classList.add("hidden");
-    this.elements.wrapper.classList.remove("pause");
+    const timeoutCountdown = setInterval(() => {
+      --countDown;
+      this.setOverlayTitle(`Resuming in ${countDown}`);
+    }, 1000);
 
-    this.music.play();
-    this.startTimeCounter();
-    this.startFailChecker();
+    setTimeout(() => {
+      clearInterval(timeoutCountdown);
+      this.isPaused = false;
+      this.isResuming = false;
+
+      this.elements.overlay.container.classList.add("hidden");
+      this.elements.wrapper.classList.remove("pause");
+      this.setOverlayTitle("");
+
+      this.music.play();
+      this.startTimeCounter();
+      this.startFailChecker();
+    }, this.pauseTimeout * 1000);
   }
 
   skipToMain() {
