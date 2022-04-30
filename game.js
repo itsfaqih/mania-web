@@ -16,7 +16,7 @@ export class Game {
       title: document.getElementById("overlay-title"),
     },
     wrapper: document.getElementById("wrapper"),
-    lines: {
+    track: {
       1: document.getElementById("line-1"),
       2: document.getElementById("line-2"),
       3: document.getElementById("line-3"),
@@ -29,6 +29,11 @@ export class Game {
       4: document.getElementById("key-4"),
     },
     combo: document.getElementById("combo"),
+    interface: document.getElementById("interface"),
+    skip: {
+      container: document.getElementById("skip"),
+      button: document.getElementById("skip-button"),
+    },
   };
   beats = {
     1: [],
@@ -80,11 +85,15 @@ export class Game {
         }
       }
     });
+
+    this.elements.skip.button.addEventListener("click", () => {
+      this.skipToMain();
+    });
   }
 
   async load(beatmap) {
     const createBeatElement = (id, key) => {
-      const color = key === 1 || key === 4 ? "bg-blue-300" : "bg-red-300";
+      const color = key === 1 || key === 4 ? "bg-blue-400" : "bg-red-400";
 
       return `<div id="beat-${id}" class="absolute w-full h-full transition duration-500">
         <div class="-mt-8 h-8 w-full ${color} absolute"></div>
@@ -116,16 +125,16 @@ export class Game {
           });
         });
 
-        this.elements.lines[1].innerHTML = this.beats[1]
+        this.elements.track[1].innerHTML = this.beats[1]
           .map((beat) => createBeatElement(beat.id, 1))
           .join("");
-        this.elements.lines[2].innerHTML = this.beats[2]
+        this.elements.track[2].innerHTML = this.beats[2]
           .map((beat) => createBeatElement(beat.id, 2))
           .join("");
-        this.elements.lines[3].innerHTML = this.beats[3]
+        this.elements.track[3].innerHTML = this.beats[3]
           .map((beat) => createBeatElement(beat.id, 3))
           .join("");
-        this.elements.lines[4].innerHTML = this.beats[4]
+        this.elements.track[4].innerHTML = this.beats[4]
           .map((beat) => createBeatElement(beat.id, 4))
           .join("");
       })
@@ -238,6 +247,8 @@ export class Game {
       this.startTimeCounter();
       this.startFailChecker();
     });
+
+    this.elements.interface.classList.remove("hidden");
   }
 
   pause() {
@@ -286,6 +297,7 @@ export class Game {
     this.music.currentTime = this.skipTime;
 
     this.elements.wrapper.classList.add("skip");
+    this.elements.skip.container.classList.add("hidden");
   }
 
   setOverlayTitle(text) {

@@ -4,8 +4,9 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Mania! Web</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fontbit.io/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
       @keyframes beat {
         from {
@@ -17,9 +18,15 @@
       }
     </style>
   </head>
-  <body class="bg-black">
-    <div class="fixed left-10 top-10">
-      <p class="text-white text-xl">Combo: <span id="combo">0</span></p>
+  <body class="bg-black font-['Plus_Jakarta_Sans']">
+    <div id="interface" class="hidden">
+      <div class="fixed left-24 bottom-20">
+        <p class="text-white text-6xl font-bold"><span id="combo">0</span>x</p>
+      </div>
+      <div id="skip" class="fixed right-24 bottom-16 flex flex-col items-center">
+        <button id="skip-button" class="text-white text-6xl bg-amber-600 py-6 px-12 rounded-xl">Skip</button>
+        <p class="text-white text-lg mt-4">Or press Space</p>
+      </div>
     </div>
     <div
       class="flex flex-col max-w-xl min-h-screen mx-auto bg-gray-900 border-l-2 border-r-2 border-gray-700"
