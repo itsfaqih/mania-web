@@ -35,6 +35,7 @@ export class Game {
     2: [],
     3: [],
     4: [],
+    all: [],
   };
   keybinds = {
     1: "d",
@@ -109,6 +110,7 @@ export class Game {
 
           this.beats[beat.key].push({
             time: timeToSeconds(beat.time),
+            key: beat.key,
             id: index,
             pressed: false,
           });
@@ -181,29 +183,40 @@ export class Game {
 
   startFailChecker() {
     this.failChecker = setInterval(() => {
-      if (this.combo === 0) {
+      const beats = Object.values(this.beats)
+        .reduce((prev, cur) => [...prev, ...cur], [])
+        .sort((a, b) => a.id - b.id);
+
+      const nearestCurrentBeatIndex = beats.findIndex((beat) => {
+        return Math.abs(beat.time - this.music.currentTime) <= this.tolerance;
+      });
+
+      if (nearestCurrentBeatIndex === -1) {
         return;
       }
 
-      Object.values(this.beats).forEach((beats) => {
-        const nearestCurrentBeatIndex = beats.findIndex((beat) => {
-          return Math.abs(beat.time - this.music.currentTime) <= this.tolerance;
-        });
+      const currentBeat = beats[nearestCurrentBeatIndex];
+      const previousBeat = beats[nearestCurrentBeatIndex - 1];
+      const isFirstBeat = nearestCurrentBeatIndex === 0;
 
-        if (nearestCurrentBeatIndex === -1) {
-          return;
-        }
+      if (isFirstBeat || (!isFirstBeat && currentBeat.id !== previousBeat.id)) {
+        setTimeout(() => {
+          const currentBeatKeyIndex = this.beats[currentBeat.key].findIndex(
+            (beat) => {
+              return beat.id === currentBeat.id;
+            }
+          );
 
-        const previousBeat = beats[nearestCurrentBeatIndex - 1];
-        const isFirstBeat = previousBeat === undefined;
+          if (!this.beats[currentBeat.key][currentBeatKeyIndex].pressed) {
+            this.combo = 0;
 
-        if (!isFirstBeat && !previousBeat.pressed) {
-          this.combo = 0;
+            this.elements.combo.textContent = this.combo;
 
-          this.elements.combo.textContent = this.combo;
-        }
-      });
-    }, 100);
+            this.showFailKeyIndicator(currentBeat.key);
+          }
+        }, this.tolerance * 1000);
+      }
+    }, 50);
   }
 
   pauseTimeCounter() {
@@ -277,5 +290,15 @@ export class Game {
 
   setOverlayTitle(text) {
     this.elements.overlay.title.textContent = text;
+  }
+
+  showFailKeyIndicator(key) {
+    this.elements.keys[key].classList.remove("border-t-gray-700");
+    this.elements.keys[key].classList.add("border-t-red-500");
+
+    setTimeout(() => {
+      this.elements.keys[key].classList.remove("border-t-red-500");
+      this.elements.keys[key].classList.add("border-t-gray-700");
+    }, 100);
   }
 }
