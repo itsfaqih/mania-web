@@ -1,12 +1,19 @@
-export const timeToSeconds = (time) => {
+export const timeToMiliseconds = (time = null) => {
+  if (time === null) {
+    return null;
+  }
+
   const [minutes, seconds, miliseconds] = time.split(":").map(Number);
-  return minutes * 60 + seconds + miliseconds / 1000;
+  return miliseconds + seconds * 1000 + minutes * 60000;
 };
 
-export const renderCss = (css) => {
-  const styleElement = document.createElement("style");
-  styleElement.innerHTML = css;
-  document.head.appendChild(styleElement);
+export const timeToSeconds = (time = null) => {
+  if (time === null) {
+    return null;
+  }
+
+  const [minutes, seconds, miliseconds] = time.split(":").map(Number);
+  return seconds + minutes * 60 + miliseconds / 1000;
 };
 
 export const getKeyByValue = (object, value) => {

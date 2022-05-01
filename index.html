@@ -5,90 +5,35 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mania! Web</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fontbit.io/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fontbit.io/css2?family=Plus+Jakarta+Sans:wght@400;700&amp;display=swap"
+      rel="stylesheet"
+    />
     <style>
-      @keyframes beat {
-        from {
-          transform: translateY(0);
-        }
-        to {
-          transform: translateY(100%);
-        }
+      * {
+        margin: 0;
+        padding: 0;
       }
     </style>
   </head>
-  <body class="bg-black font-['Plus_Jakarta_Sans']">
-    <div id="interface" class="hidden">
-      <div class="fixed left-24 bottom-20">
-        <p class="text-white text-6xl font-bold"><span id="combo">0</span>x</p>
-      </div>
-      <div id="skip" class="fixed right-24 bottom-16 flex flex-col items-center">
-        <button id="skip-button" class="text-white text-6xl bg-amber-600 py-6 px-12 rounded-xl">Skip</button>
-        <p class="text-white text-lg mt-4">Or press Space</p>
-      </div>
-    </div>
-    <div
-      class="flex flex-col max-w-xl min-h-screen mx-auto bg-gray-900 border-l-2 border-r-2 border-gray-700"
-    >
-      <div id="wrapper" class="grid grid-cols-4 flex-1 overflow-hidden">
-        <div id="line-1" class="relative h-full"></div>
-        <div id="line-2" class="relative h-full"></div>
-        <div id="line-3" class="relative h-full"></div>
-        <div id="line-4" class="relative h-full"></div>
-      </div>
-      <div class="grid grid-cols-4 h-40">
-        <div
-          id="key-1"
-          class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-r border-x-gray-900 border-t-8 border-t-gray-700 transition mt-auto"
-        >
-          D
-        </div>
-        <div
-          id="key-2"
-          class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-r border-x-gray-900 border-t-8 border-t-gray-700 transition mt-auto"
-        >
-          F
-        </div>
-        <div
-          id="key-3"
-          class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-r border-x-gray-900 border-t-8 border-t-gray-700 transition mt-auto"
-        >
-          J
-        </div>
-        <div
-          id="key-4"
-          class="flex items-center justify-center text-3xl font-bold text-white h-full bg-gray-700 border-l border-x-gray-900 border-t-8 border-t-gray-700 transition mt-auto"
-        >
-          K
-        </div>
-      </div>
-    </div>
-
-    <div id="overlay">
-      <div
-        class="fixed inset-0 w-full h-full bg-black/70 flex items-center justify-center"
-      >
-        <h2 id="overlay-title" class="text-white text-5xl font-bold">
-          Loading...
-        </h2>
-      </div>
-    </div>
-
+  <body
+    style="
+      display: flex;
+      justify-content: center;
+      background-color: black;
+      min-height: 100vh;
+    "
+  >
+    <canvas id="game" width="1024"> </canvas>
     <script type="module">
-      import { Game } from "./game.js";
+      import { Game } from "./app.js";
 
-      const game = new Game();
+      const canvas = document.getElementById("game");
+      const game = new Game(canvas);
 
-      game
-        .load("./beatmaps/seiryu-blue-dragon")
-        .then(() => {
-          game.setOverlayTitle("Press Enter to Start");
-        })
-        .catch((err) => {
-          console.error(error);
-          game.setOverlayTitle("An error occured");
-        });
+      game.loadBeatmap("./beatmaps/seiryu-blue-dragon").then(() => {
+        game.play();
+      });
     </script>
   </body>
 </html>
