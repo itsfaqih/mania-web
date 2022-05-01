@@ -18,16 +18,16 @@ export class Game {
     },
     wrapper: document.getElementById("wrapper"),
     track: {
-      1: document.getElementById("line-1"),
-      2: document.getElementById("line-2"),
-      3: document.getElementById("line-3"),
-      4: document.getElementById("line-4"),
+      1: document.getElementById("track-1"),
+      2: document.getElementById("track-2"),
+      3: document.getElementById("track-3"),
+      4: document.getElementById("track-4"),
     },
-    keys: {
-      1: document.getElementById("key-1"),
-      2: document.getElementById("key-2"),
-      3: document.getElementById("key-3"),
-      4: document.getElementById("key-4"),
+    controls: {
+      1: document.getElementById("control-1"),
+      2: document.getElementById("control-2"),
+      3: document.getElementById("control-3"),
+      4: document.getElementById("control-4"),
     },
     combo: document.getElementById("combo"),
     interface: document.getElementById("interface"),
@@ -41,7 +41,6 @@ export class Game {
     2: [],
     3: [],
     4: [],
-    all: [],
   };
   keybinds = {
     1: "d",
@@ -50,17 +49,17 @@ export class Game {
     4: "k",
   };
   isStarted = false;
-  isPaused = false;
+  isPaused = true;
   isResuming = false;
 
   initEventListener() {
     document.addEventListener("keydown", (e) => {
-      if (!this.isStarted && e.key === "Enter") {
-        this.start();
-      }
-
-      if (!this.isResuming && this.isStarted && this.isPaused && e.key === "Enter") {
-        this.resume();
+      if (e.key === "Enter") {
+        if (!this.isStarted) {
+          this.start();
+        } else if (!this.isResuming && this.isPaused) {
+          this.resume();
+        }
       }
 
       if (this.isStarted && !this.isPaused && !this.isResuming) {
@@ -69,7 +68,9 @@ export class Game {
         }
 
         if (e.key === "Escape") {
-          this.pause();
+          if (this.isStarted && !this.isPaused && !this.isResuming) {
+            this.pause();
+          }
         }
 
         const hasPassedSkipTime = this.music.currentTime >= this.skipTime;
@@ -97,8 +98,8 @@ export class Game {
     const createBeatElement = (id, key) => {
       const color = key === 1 || key === 4 ? "bg-blue-400" : "bg-red-400";
 
-      return `<div id="beat-${id}" class="absolute w-full h-full transition duration-500">
-        <div class="-mt-8 h-8 w-full ${color} absolute"></div>
+      return `<div id="beat-${id}" class="absolute w-full h-full transition duration-500 opacity-0">
+        <div class="w-full ${color} absolute"></div>
       </div>`;
     };
 
@@ -110,9 +111,24 @@ export class Game {
         this.music = new Audio(`${beatmap}/music.mp3`);
 
         data.beats.forEach((beat, index) => {
+          const noteBaseHeight = 2;
+          const noteHeight = beat.end
+            ? (timeToSeconds(beat.end) - timeToSeconds(beat.start)) * 10 * 2
+            : noteBaseHeight;
+
           this.animationCss += `#beat-${index} {
               animation: beat linear ${this.speed}s;
-              animation-delay: ${timeToSeconds(beat.time) - this.speed}s;
+              animation-delay: ${timeToSeconds(beat.start) - this.speed}s;
+              animation-fill-mode: forwards;
+            }
+
+            #beat-${index} div {
+              height: ${noteHeight}rem;
+              ${
+                beat.end
+                  ? `transform: translateY(-${noteHeight - noteBaseHeight}rem);`
+                  : ""
+              }
             }
             
             .pause #beat-${index} {
@@ -120,7 +136,8 @@ export class Game {
             }`;
 
           this.beats[beat.key].push({
-            time: timeToSeconds(beat.time),
+            start: timeToSeconds(beat.start),
+            end: beat.end ? timeToSeconds(beat.end) : null,
             key: beat.key,
             id: index,
             pressed: false,
@@ -143,13 +160,19 @@ export class Game {
       .then(() => {
         this.initEventListener();
 
+        this.setOverlayTitle("Press Enter to Start");
+
         return { isLoaded: true };
+      })
+      .catch((err) => {
+        console.error(err);
+        this.setOverlayTitle("An error occured");
       });
   }
 
   handleKey(key, type) {
     const pressedKey = getKeyByValue(this.keybinds, key);
-    const keyClassList = this.elements.keys[pressedKey].classList;
+    const keyClassList = this.elements.controls[pressedKey].classList;
 
     switch (type) {
       case "down":
@@ -160,15 +183,20 @@ export class Game {
 
         const pressedBeat = this.beats[pressedKey].findIndex((beat) => {
           return (
-            Math.abs(beat.time - pressedTime) <= this.tolerance && !beat.pressed
+            Math.abs(beat.start - pressedTime) <= this.tolerance &&
+            !beat.pressed
           );
         });
 
         if (pressedBeat !== -1) {
           this.beats[pressedKey][pressedBeat].pressed = true;
 
-          this.elements.keys[pressedKey].classList.remove("border-t-gray-700");
-          this.elements.keys[pressedKey].classList.add("border-t-green-500");
+          this.elements.controls[pressedKey].classList.remove(
+            "border-t-gray-700"
+          );
+          this.elements.controls[pressedKey].classList.add(
+            "border-t-green-500"
+          );
 
           this.combo += 1;
           this.elements.combo.textContent = this.combo;
@@ -179,8 +207,10 @@ export class Game {
         keyClassList.remove("bg-gray-600");
         keyClassList.add("bg-gray-700");
 
-        this.elements.keys[pressedKey].classList.add("border-t-gray-700");
-        this.elements.keys[pressedKey].classList.remove("border-t-green-500");
+        this.elements.controls[pressedKey].classList.add("border-t-gray-700");
+        this.elements.controls[pressedKey].classList.remove(
+          "border-t-green-500"
+        );
 
         break;
     }
@@ -199,7 +229,7 @@ export class Game {
         .sort((a, b) => a.id - b.id);
 
       const nearestCurrentBeatIndex = beats.findIndex((beat) => {
-        return Math.abs(beat.time - this.music.currentTime) <= this.tolerance;
+        return Math.abs(beat.start - this.music.currentTime) <= this.tolerance;
       });
 
       if (nearestCurrentBeatIndex === -1) {
@@ -240,6 +270,7 @@ export class Game {
 
   start() {
     this.isStarted = true;
+    this.isPaused = false;
 
     this.elements.overlay.container.classList.add("hidden");
 
@@ -262,8 +293,6 @@ export class Game {
     this.music.pause();
     this.pauseTimeCounter();
     this.pauseFailChecker();
-
-    console.log(this.beats);
   }
 
   resume() {
@@ -302,8 +331,9 @@ export class Game {
               .skip #beat-${beat.id} {
                 animation: beat linear ${this.speed}s;
                 animation-delay: ${
-                  beat.time - this.speed - skipTime + this.tolerance
+                  beat.start - this.speed - skipTime + this.tolerance
                 }s;
+                animation-fill-mode: forwards;
               }`;
       });
     });
@@ -321,12 +351,12 @@ export class Game {
   }
 
   showFailKeyIndicator(key) {
-    this.elements.keys[key].classList.remove("border-t-gray-700");
-    this.elements.keys[key].classList.add("border-t-red-500");
+    this.elements.controls[key].classList.remove("border-t-gray-700");
+    this.elements.controls[key].classList.add("border-t-red-500");
 
     setTimeout(() => {
-      this.elements.keys[key].classList.remove("border-t-red-500");
-      this.elements.keys[key].classList.add("border-t-gray-700");
+      this.elements.controls[key].classList.remove("border-t-red-500");
+      this.elements.controls[key].classList.add("border-t-gray-700");
     }, 100);
   }
 }

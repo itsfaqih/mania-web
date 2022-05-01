@@ -5,111 +5,658 @@
   "music": "./music.mp3",
   "beats": [
     {
-      "time": "00:22:164",
+      "start": "00:22:164",
+      "end": null,
       "key": 3
     },
     {
-      "time": "00:22:478",
+      "start": "00:22:478",
+      "end": null,
       "key": 2
     },
     {
-      "time": "00:22:789",
+      "start": "00:22:789",
+      "end": null,
       "key": 1
     },
     {
-      "time": "00:23:106",
+      "start": "00:23:106",
+      "end": null,
       "key": 3
     },
     {
-      "time": "00:23:421",
+      "start": "00:23:421",
+      "end": null,
       "key": 4
     },
     {
-      "time": "00:23:735",
+      "start": "00:23:735",
+      "end": null,
       "key": 2
     },
     {
-      "time": "00:24:049",
+      "start": "00:24:049",
+      "end": null,
       "key": 3
     },
     {
-      "time": "00:24:363",
+      "start": "00:24:363",
+      "end": null,
       "key": 1
     },
     {
-      "time": "00:24:677",
+      "start": "00:24:677",
+      "end": null,
       "key": 2
     },
     {
-      "time": "00:24:991",
+      "start": "00:24:991",
+      "end": null,
       "key": 4
     },
     {
-      "time": "00:25:305",
+      "start": "00:25:305",
+      "end": null,
       "key": 1
     },
     {
-      "time": "00:25:620",
+      "start": "00:25:620",
+      "end": null,
       "key": 3
     },
     {
-      "time": "00:25:934",
+      "start": "00:25:934",
+      "end": null,
       "key": 4
     },
     {
-      "time": "00:26:248",
+      "start": "00:26:248",
+      "end": null,
       "key": 2
     },
     {
-      "time": "00:26:562",
+      "start": "00:26:562",
+      "end": null,
       "key": 1
     },
     {
-      "time": "00:26:876",
+      "start": "00:26:876",
+      "end": null,
       "key": 4
     },
     {
-      "time": "00:27:190",
+      "start": "00:27:190",
+      "end": null,
       "key": 3
     },
     {
-      "time": "00:27:504",
+      "start": "00:27:504",
+      "end": null,
       "key": 1
     },
     {
-      "time": "00:27:819",
+      "start": "00:27:819",
+      "end": null,
       "key": 4
     },
     {
-      "time": "00:28:133",
+      "start": "00:28:133",
+      "end": null,
       "key": 2
     },
     {
-      "time": "00:28:447",
+      "start": "00:28:447",
+      "end": null,
       "key": 1
     },
     {
-      "time": "00:28:761",
+      "start": "00:28:761",
+      "end": null,
       "key": 3
     },
     {
-      "time": "00:29:075",
+      "start": "00:29:075",
+      "end": null,
       "key": 4
     },
     {
-      "time": "00:29:389",
+      "start": "00:29:389",
+      "end": null,
       "key": 1
     },
     {
-      "time": "00:29:703",
+      "start": "00:29:703",
+      "end": null,
       "key": 2
     },
     {
-      "time": "00:30:017",
+      "start": "00:30:017",
+      "end": null,
       "key": 4
     },
     {
-      "time": "00:30:332",
+      "start": "00:30:332",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:30:646",
+      "end": "00:31:902",
+      "key": 1
+    },
+    {
+      "start": "00:30:960",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:31:274",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:31:588",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:31:588",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:32:216",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:32:531",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:32:845",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:33:159",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:33:159",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:33:316",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:33:473",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:33:630",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:33:787",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:33:944",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:34:101",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:34:258",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:34:415",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:34:574",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:34:730",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:34:887",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:35:044",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:35:201",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:35:358",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:35:515",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:35:672",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:35:829",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:35:986",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:36:143",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:36:300",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:36:457",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:36:614",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:36:771",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:36:928",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:37:086",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:37:243",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:37:400",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:37:714",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:37:871",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:38:028",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:38:185",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:38:185",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:38:342",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:38:499",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:38:656",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:38:813",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:38:970",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:39:127",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:39:285",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:39:442",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:39:599",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:39:756",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:39:913",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:40:070",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:40:227",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:40:384",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:40:541",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:40:698",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:40:855",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:41:012",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:41:169",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:41:326",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:41:483",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:41:641",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:41:789",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:41:955",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:42:112",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:42:269",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:42:426",
+      "end": "00:43:211",
+      "key": 3
+    },
+    {
+      "start": "00:43:211",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:43:211",
+      "end": "00:43:839",
+      "key": 1
+    },
+    {
+      "start": "00:43:525",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:43:839",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:44:154",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:44:468",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:44:782",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:45:096",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:45:410",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:45:724",
+      "end": "00:46:353",
+      "key": 4
+    },
+    {
+      "start": "00:46:038",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:46:353",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:46:667",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:46:981",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:47:295",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:47:609",
+      "end": "00:47:923",
+      "key": 4
+    },
+    {
+      "start": "00:47:923",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:48:080",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:48:237",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:48:237",
+      "end": "00:48:866",
+      "key": 4
+    },
+    {
+      "start": "00:48:552",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:48:866",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:49:180",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:49:494",
+      "end": null,
+      "key": 4
+    },
+    {
+      "start": "00:49:808",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:50:122",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:50:436",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:50:750",
+      "end": "00:51:379",
+      "key": 4
+    },
+    {
+      "start": "00:51:065",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:51:379",
+      "end": null,
+      "key": 1
+    },
+    {
+      "start": "00:51:693",
+      "end": null,
+      "key": 3
+    },
+    {
+      "start": "00:52:007",
+      "end": "00:53:264",
+      "key": 1
+    },
+    {
+      "start": "00:52:635",
+      "end": "00:53:264",
+      "key": 4
+    },
+    {
+      "start": "00:53:264",
+      "end": null,
+      "key": 2
+    },
+    {
+      "start": "00:53:264",
+      "end": null,
       "key": 3
     }
   ]
