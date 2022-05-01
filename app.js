@@ -12,6 +12,14 @@ export class Game {
   tileHeight = 28;
   tracks = [];
   controls = [];
+  combo = 0;
+  score = 0;
+  scoreMultiplier = 1;
+  tolerance = 100;
+  latestCollidedNote = null;
+  isStarted = false;
+  isPaused = false;
+  isResuming = false;
 
   constructor(canvas) {
     if (!canvas) {
@@ -26,6 +34,7 @@ export class Game {
 
     this.ctx = this.canvas.getContext("2d");
 
+    this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
 
     this.controlHeight = parseInt(this.canvas.height / 6);
@@ -83,6 +92,23 @@ export class Game {
     });
   }
 
+  renderCombo() {
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "4rem Plus Jakarta Sans";
+    this.ctx.textAlign = "left";
+
+    this.ctx.fillText(`${this.combo}x`, 80, this.canvas.height - 80);
+  }
+
+  renderScore() {
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "3rem Plus Jakarta Sans";
+    this.ctx.textAlign = "right";
+
+    const score = this.score.toString().padStart(10, "0");
+    this.ctx.fillText(`${score}`, this.canvas.width - 80, 80);
+  }
+
   initEventListeners() {
     window.addEventListener("keydown", (e) => {
       this.handleUserInput(e.key, "keydown");
@@ -112,23 +138,38 @@ export class Game {
       });
   }
 
-  play() {
-    this.beatmap.song.play();
+  renderPlay() {
+    requestAnimationFrame(this.renderPlay.bind(this));
 
-    this.renderNotes();
-  }
-
-  renderNotes() {
-    requestAnimationFrame(this.renderNotes.bind(this));
-
+    // clear track
     this.ctx.clearRect(0, 0, this.canvas.width, this.trackHeight);
 
-    this.renderTracks();
+    // clear sides
+    this.ctx.clearRect(
+      0,
+      this.trackHeight,
+      (this.canvas.width - this.trackWidth * 4) / 2 - this.borderWidth * 6,
+      this.canvas.height - this.trackHeight
+    );
 
-    const elapsedTime = this.beatmap.song.currentTime * 1000;
+    this.ctx.clearRect(
+      this.canvas.width + this.trackWidth + this.borderWidth,
+      this.trackHeight,
+      (this.canvas.width - this.trackWidth) / 2,
+      this.canvas.height - this.trackHeight
+    );
+
+    this.handleCollision();
+    this.handleMissedNote();
+
+    this.scoreMultiplier = 1 + this.combo / 100;
+
+    this.renderTracks();
+    this.renderCombo();
+    this.renderScore();
 
     this.beatmap.notes.forEach((note) => {
-      note.render(elapsedTime);
+      note.render();
     });
   }
 
@@ -137,17 +178,117 @@ export class Game {
       this.handleControlInput(key, type);
     }
 
-    if (key === " ") {
-      this.beatmap.song.currentTime = this.beatmap.skipTime;
+    if (type === "keydown") {
+      if (key === "Enter") {
+        this.actionPlay();
+      }
+
+      if (key === " ") {
+        this.actionSkip();
+      }
+
+      if (key === "Escape") {
+        this.actionResume();
+        this.actionPause();
+      }
     }
   }
 
   handleControlInput(key, type) {
     if (type === "keydown") {
       this.controls[this.controlKeys.indexOf(key)].render("active");
+      this.handlePressedNote(key);
     } else if (type === "keyup") {
       this.controls[this.controlKeys.indexOf(key)].render("inactive");
     }
+  }
+
+  handleCollision() {
+    this.beatmap.notes.forEach((note) => {
+      const elapsedTime = this.getElapsedTime();
+      const isColliding = Math.abs(elapsedTime - note.start) < this.tolerance;
+
+      if (isColliding) {
+        this.latestCollidedNote = note;
+      }
+    });
+  }
+
+  handlePressedNote(key) {
+    const isPressed =
+      this.latestCollidedNote && this.latestCollidedNote.key === key;
+
+    if (!isPressed) {
+      return;
+    }
+
+    this.latestCollidedNote.pressed = true;
+    this.combo += 1;
+    this.score += 100 * this.scoreMultiplier;
+  }
+
+  handleMissedNote() {
+    if (!this.latestCollidedNote) {
+      return;
+    }
+
+    const elapsedTime = this.getElapsedTime();
+    const passedTolerance =
+      elapsedTime - this.latestCollidedNote.start > this.tolerance;
+
+    if (passedTolerance && this.latestCollidedNote.pressed === false) {
+      this.combo = 0;
+    }
+  }
+
+  actionPlay() {
+    if (this.isStarted) {
+      return;
+    }
+
+    this.isStarted = true;
+
+    this.beatmap.song.play();
+
+    this.renderPlay();
+  }
+
+  actionSkip() {
+    const passedSkipTime = this.getElapsedTime() > this.beatmap.skipTime * 1000;
+
+    if (!this.isStarted || passedSkipTime || this.isPaused || this.isResuming) {
+      return;
+    }
+
+    this.beatmap.song.currentTime = this.beatmap.skipTime;
+  }
+
+  actionPause() {
+    if (!this.isStarted || this.isPaused || this.isResuming) {
+      return;
+    }
+
+    this.isPaused = true;
+
+    this.beatmap.song.pause();
+  }
+
+  actionResume() {
+    if (!this.isStarted || !this.isPaused || this.isResuming) {
+      return;
+    }
+
+    this.isPaused = false;
+    this.isResuming = true;
+
+    setTimeout(() => {
+      this.isResuming = false;
+      this.beatmap.song.play();
+    }, 3000);
+  }
+
+  getElapsedTime() {
+    return this.beatmap.song.currentTime * 1000;
   }
 }
 
@@ -220,6 +361,8 @@ class Note {
   constructor(game, trackIndex, start, end = null) {
     this.game = game;
     this.trackIndex = trackIndex;
+    this.key = this.game.controlKeys[trackIndex];
+    this.pressed = false;
 
     this.start = start;
     this.end = end;
@@ -239,21 +382,19 @@ class Note {
     };
   }
 
-  render(elapsedTime) {
+  render() {
     this.game.ctx.fillStyle = this.color;
 
-    const y = elapsedTime - this.start + this.game.trackHeight;
+    const y = this.game.getElapsedTime() - this.start + this.game.trackHeight;
 
     let height = this.height;
     if (y + this.height >= this.game.trackHeight) {
-      height = Math.max(this.height - (y + this.height - this.game.trackHeight), 0);
+      height = Math.max(
+        this.height - (y + this.height - this.game.trackHeight),
+        0
+      );
     }
 
-    this.game.ctx.fillRect(
-      this.position.x,
-      y,
-      this.game.trackWidth,
-      height
-    );
+    this.game.ctx.fillRect(this.position.x, y, this.game.trackWidth, height);
   }
 }
